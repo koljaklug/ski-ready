@@ -1,3 +1,4 @@
 const CACHE='ski-ready-v10';const ASSETS=['./','./index.html','./styles.css','./image-fix.css','./fluid-ios.css','./core-image.css','./splash.css','./rest.css','./streak.css','./celebrate.css','./app.js','./manifest.webmanifest','./icon.svg','./form-band.png','./form-bridge.png','./form-squat.png','./form-split.png','./form-skater.png','./form-calf.png','./form-tib.png','./form-dead.png','./hero-loop.mp4','./hero-poster.jpg','./celebrate-burst.mp4'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
-self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
+self.addEventListener('activate',e=>{e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))]))});
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request,{cacheName:CACHE}).then(r=>r||fetch(e.request))));
